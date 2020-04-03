@@ -9,8 +9,23 @@
 <canvas id="field"></canvas>
 <div id="score">score: 0</div>
 <button>start</button>
+<div class="modeSelector">
+    <div>
+        <input type="radio" id="easy" name="mode" value="1" />
+        <label>easy</label>
+    </div>
 
-<script type="module" src="js/another.js"></script>
+    <div>
+        <input type="radio" id="normal" name="mode" value="2" checked />
+        <label>normal</label>
+    </div>
+
+    <div>
+        <input type="radio" id="hard" name="mode" value="3" />
+        <label>hard</label>
+    </div>
+</div>
+
 <script type="module" src="js/main.js"></script>
 </body>
 </html>
