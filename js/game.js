@@ -9,7 +9,15 @@ class Game {
     this.vector = { d: 'ArrowRight', x: this.SIZE, y: 0 }
 
     this.baits = { num: 2, data: [] }
-    this.snake = [{ x: 75, y: 105 }]
+    this.snake = {
+      willBiteBait: ({x, y}) => {
+        return this.baits.data.some(b => b.x === x && b.y === y)
+      },
+      willBiteItself: ({x, y}) => {
+        return this.snake.data.some(s => s.x === x && s.y === y)
+      },
+      data: [{ x: 75, y: 105 }]
+    }
 
     this.settings = {
       speed: () => {
@@ -45,7 +53,13 @@ class Game {
     this.vector = { d: 'ArrowRight', x: this.SIZE, y: 0 }
 
     this.baits = { num: this.settings.baitNum(), data: [] }
-    this.snake = [{ x: 75, y: 105 }]
+    this.snake.data = [{ x: 75, y: 105 }]
+  }
+
+  speedUp(n, fn) {
+    this.speed -= n
+    clearInterval(this.play)
+    this.play = setInterval(fn, this.speed)
   }
 
   makeBait() {

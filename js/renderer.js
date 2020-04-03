@@ -17,17 +17,12 @@ export const renderField = game => {
 
 export const renderSnake = game => {
   window.ctx.fillStyle = '#222'
-  game.snake.forEach(s => window.ctx.fillRect(s.x, s.y, game.SIZE, game.SIZE))
+  game.snake.data.forEach(s => window.ctx.fillRect(s.x, s.y, game.SIZE, game.SIZE))
 }
 
 export const renderBait = game => {
   window.ctx.fillStyle = '#b2b'
   game.baits.data.forEach(b => window.ctx.fillRect(b.x, b.y, game.SIZE, game.SIZE))
-}
-
-export const updateObjects = game => {
-  renderBait(game)
-  renderSnake(game)
 }
 
 export const renderRestartButton = () => {
@@ -36,6 +31,11 @@ export const renderRestartButton = () => {
 }
 
 export const renderScore = game => {
-  game.score = game.snake.length - 1
+  game.score = game.snake.data.length - 1
   window.scoreDiv.innerHTML = 'score: ' + String(game.score)
+}
+
+export const updateObjects = game => {
+  renderBait(game)
+  renderSnake(game)
 }
