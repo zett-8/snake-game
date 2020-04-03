@@ -53,7 +53,17 @@ const watch = () => {
     gameOver('Don\'t bite yourself!')
   }
 
-  if (game.score !== game.snake.data.length - 1) renderScore(game)
+  if (game.score !== game.snake.data.length - 1) {
+    game.score = game.snake.data.length - 1
+    renderScore(game)
+
+    if (game.score % 5 === 0) {
+      game.fieldSize -= 30
+      renderField(game)
+      game.checkBaitsPosition()
+      updateObjects(game)
+    }
+  }
 }
 
 

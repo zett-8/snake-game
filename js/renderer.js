@@ -37,7 +37,6 @@ export const hideStartingBoard = () => {
 }
 
 export const renderScore = game => {
-  game.score = game.snake.data.length - 1
   window.scoreDiv.innerHTML = 'score: ' + String(game.score)
 }
 

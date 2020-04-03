@@ -50,6 +50,7 @@ class Game {
 
   reset() {
     this.score = 0
+    this.fieldSize = 630
     this.speed = this.settings.speed()
     this.vector = { d: 'ArrowRight', x: this.SIZE, y: 0 }
 
@@ -80,6 +81,11 @@ class Game {
 
       if (ableToPut(c)) this.baits.data.push({ x: c[0], y: c[1]})
     }
+  }
+
+  checkBaitsPosition() {
+    this.baits.data = this.baits.data.filter(b => b.x > 0 && b.y > 0 && b.x <= this.fieldSize - this.SIZE  && b.y <= this.fieldSize - this.SIZE)
+    this.makeBait()
   }
 
   moveSnake(updateFunc) {
