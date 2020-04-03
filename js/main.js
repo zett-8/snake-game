@@ -1,11 +1,14 @@
 'use strict'
 
 import Game from './game.js'
-import { clear, renderRestartButton, renderScore, updateObjects, renderField  } from './renderer.js'
+import { clear, renderStartingBoard, hideStartingBoard, renderScore, updateObjects, renderField  } from './renderer.js'
 
 // @ DOMs
 window.canvas = document.getElementById('field')
 window.ctx = window.canvas.getContext('2d')
+window.startingBoard = document.querySelector('.startingBoard')
+window.messageDiv = document.querySelector('.message')
+window.scoreResult = document.querySelector('.scoreResult')
 window.startButton = document.querySelector('button')
 window.modeSelectors = document.querySelectorAll('input')
 window.scoreDiv = document.querySelector('#score')
@@ -31,23 +34,36 @@ const routine = () => {
   watch()
 }
 
+const startGame = () => {
+  initGame()
+  game.play = setInterval(() => {
+    routine()
+  }, game.speed)
+
+  hideStartingBoard()
+}
+
 const watch = () => {
   const head = game.snake.data[0]
   if (head.x < 0 || head.x >= game.fieldSize || head.y < 0 || head.y >= game.fieldSize) {
-    gameOver()
+    gameOver('Oops, bumped into wall!')
   }
 
   if (game.snake.bitItself()) {
-    gameOver()
+    gameOver('Don\'t bite yourself!')
   }
 
   if (game.score !== game.snake.data.length - 1) renderScore(game)
 }
 
-const gameOver = () => {
+
+const gameOver = message => {
   clearInterval(game.play)
-  alert('game over')
-  renderRestartButton()
+  game.play = null
+
+  ;(() => {
+    return new Promise(resolve => setTimeout(resolve, 400))
+  })().then(() => renderStartingBoard(game, message))
 }
 
 const setKeyConfigs = () => {
@@ -61,14 +77,7 @@ const setKeyConfigs = () => {
   })
 
   // start button setting
-  window.startButton.onclick = function() {
-    initGame()
-    game.play = setInterval(() => {
-      routine()
-    }, game.speed)
-
-    window.startButton.style.visibility = 'hidden'
-  }
+  window.startButton.onclick = startGame
 
   const handleKeyDown = e => {
     // snake cannot return
@@ -93,8 +102,12 @@ const setKeyConfigs = () => {
         game.vector = { d: e.code, x: 0, y: game.SIZE }
         break
 
-      default:
+      case 'ArrowLeft':
         game.vector = { d: e.code, x: -game.SIZE, y: 0 }
+        break
+
+      case 'Enter':
+        if (game.play === null) startGame()
     }
   }
 }

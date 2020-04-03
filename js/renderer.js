@@ -25,9 +25,15 @@ export const renderBait = game => {
   game.baits.data.forEach(b => window.ctx.fillRect(b.x, b.y, game.SIZE, game.SIZE))
 }
 
-export const renderRestartButton = () => {
+export const renderStartingBoard = (game, message) => {
+  window.messageDiv.innerText = message
+  window.scoreResult.innerText = 'Your score: ' + game.score
   window.startButton.textContent = 'restart'
-  window.startButton.style.visibility = 'visible'
+  window.startingBoard.style.visibility = 'visible'
+}
+
+export const hideStartingBoard = () => {
+  window.startingBoard.style.visibility = 'hidden'
 }
 
 export const renderScore = game => {
@@ -36,6 +42,8 @@ export const renderScore = game => {
 }
 
 export const updateObjects = game => {
+  ctx.fillStyle = 'white'
+  ctx.fillRect(0, 0, window.canvas.width, window.canvas.height)
   renderBait(game)
   renderSnake(game)
 }
