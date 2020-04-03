@@ -13,8 +13,9 @@ class Game {
       willBiteBait: ({x, y}) => {
         return this.baits.data.some(b => b.x === x && b.y === y)
       },
-      willBiteItself: ({x, y}) => {
-        return this.snake.data.some(s => s.x === x && s.y === y)
+      bitItself: () => {
+        const head = this.snake.data[0]
+        return this.snake.data.slice(1).some(s => s.x === head.x && s.y === head.y)
       },
       data: [{ x: 75, y: 105 }]
     }
@@ -78,6 +79,23 @@ class Game {
       const c = newCoordinate()
 
       if (ableToPut(c)) this.baits.data.push({ x: c[0], y: c[1]})
+    }
+  }
+
+  moveSnake(updateFunc) {
+    const next = JSON.parse(JSON.stringify(this.snake.data[0]))
+    next.x += this.vector.x
+    next.y += this.vector.y
+
+    if (this.snake.willBiteBait(next)) {
+      this.snake.data.unshift(next)
+      this.baits.data = this.baits.data.filter(b => b.x !== next.x && b.y !== next.y)
+      this.makeBait()
+
+      if (this.mode === 2) this.speedUp(1, updateFunc)
+    } else {
+      this.snake.data.unshift(next)
+      this.snake.data.pop()
     }
   }
 }

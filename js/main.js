@@ -26,7 +26,7 @@ const initGame = () => {
 
 const routine = () => {
   clear()
-  moveSnake()
+  game.moveSnake(() => { routine() })
   updateObjects(game)
   watch()
 }
@@ -37,6 +37,10 @@ const watch = () => {
     gameOver()
   }
 
+  if (game.snake.bitItself()) {
+    gameOver()
+  }
+
   if (game.score !== game.snake.data.length - 1) renderScore(game)
 }
 
@@ -44,25 +48,6 @@ const gameOver = () => {
   clearInterval(game.play)
   alert('game over')
   renderRestartButton()
-}
-
-const moveSnake = () => {
-  const next = JSON.parse(JSON.stringify(game.snake.data[0]))
-  next.x += game.vector.x
-  next.y += game.vector.y
-
-  if (game.snake.willBiteBait(next)) {
-    game.snake.data.unshift(next)
-    game.baits.data = game.baits.data.filter(b => b.x !== next.x && b.y !== next.y)
-    game.makeBait()
-
-    if (game.mode === 2) game.speedUp(1, () => { routine(game) })
-  } else if (game.snake.willBiteItself(next)) {
-    gameOver(game)
-  } else {
-    game.snake.data.unshift(next)
-    game.snake.data.pop()
-  }
 }
 
 const setKeyConfigs = () => {
