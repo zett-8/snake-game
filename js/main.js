@@ -1,10 +1,8 @@
 'use strict'
 
-import Another from './another.js'
-console.log(Another)
 const SIZE = 15
 let play = null
-let gameSpeed = 50
+let gameSpeed = 100
 let FIELDSIZE = '705'
 let score = 0
 let vector = { d: 'ArrowRight', x: SIZE, y: 0 }
@@ -13,7 +11,7 @@ const ctx = canvas.getContext('2d')
 const button = document.querySelector('button')
 const scoreDiv = document.querySelector('#score')
 
-const bait = { x: 0, y: 0 }
+let baits = [{ x: 0, y: 0 }, { x: 0, y: 0}]
 const snake = [
   { x: 75, y: 105 },
   { x: 60, y: 105 },
@@ -74,7 +72,7 @@ const moveSnake = () => {
   next.x += vector.x
   next.y += vector.y
 
-  if (next.x === bait.x && next.y === bait.y) {
+  if (next.x === baits.x && next.y === baits.y) {
     snake.unshift(next)
     makeBait()
   } else if (willBiteItself(next)) {
@@ -86,21 +84,32 @@ const moveSnake = () => {
 }
 
 const makeBait = () => {
-  let newX = bait.x
-  let newY = bait.y
+  const newBait = []
 
-  while (newX === bait.x && newY === bait.y) {
-    newX = Math.floor(Math.random() * 47) * SIZE
-    newY = Math.floor(Math.random() * 47) * SIZE
+  const newCoordinate = () => {
+    const x = Math.floor(Math.random() * 47) * SIZE
+    const y = Math.floor(Math.random() * 47) * SIZE
+
+    return [x, y]
   }
 
-  bait.x = newX
-  bait.y = newY
+  const ableToPut = c => {
+    return baits.every(b => b.x !== c[0] && b.y !== c[1])
+  }
+
+
+  while (newBait.length < baits.length) {
+    const c = newCoordinate()
+
+    if (ableToPut(c)) newBait.push({ x: c[0], y: c[1]})
+  }
+
+  baits = newBait
 }
 
 const renderBait = () => {
   ctx.fillStyle = '#b2b'
-  ctx.fillRect(bait.x, bait.y, SIZE, SIZE)
+  baits.forEach(b => ctx.fillRect(b.x, b.y, SIZE, SIZE))
 }
 
 const gameWatcher = () => {
