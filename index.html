@@ -2,84 +2,77 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="user-scalable=no">
-    <title>Snake</title>
+    <title>Snake online</title>
 
     <style>
-        body {
+        html, div, input, button, p {
             margin: 0;
             padding: 0;
-            height: 100vh;
-            background-color: #222;
-            font-family: "Helvetica Neue";
         }
 
-        .startingBoard {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            align-items: center;
-            position: fixed;
-            top: 25%;
-            left: 10%;
-
-            width: 80%;
-            height: 50%;
-            box-shadow: #333333 2px 2px 12px -3px;
-
-            background-color: whitesmoke;
-        }
-
-        .message {
-            font-size: 21px;
-        }
-
-        button {
-            width: 50%;
+        body {
             background-color: #222222;
-            border: none;
-            padding: 14px 0;
-            font-size: 16px;
-            letter-spacing: 0.15rem;
             color: white;
         }
 
-        button:hover {
-            background-color: #333333;
+        .wrap {
+            display: grid;
+            grid-template-rows: min-content 20px 20px 27px;
+            row-gap: 18px;
+            width: 100vw;
+            height: 100vh;
+            text-align: center;
+            align-content: center;
+            justify-content: center;
+        }
+        
+        p {
             cursor: pointer;
+        }
+
+        input {
+            width: 260%;
+            height: 100%;
+            padding-left: 10px;
+            border: none;
+            border-right: 1px #222 solid;
+        }
+
+        button {
+            border: none;
+            width: 150px;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .roomForm {
+            display: flex;
+            width: 100%;
+            height: 0;
+
+            visibility: hidden;
+            opacity: 0;
+
+            transition: opacity 300ms, height 50ms ease-in;
+
         }
     </style>
 </head>
 <body>
+<div class="wrap">
+    <h1>Snake online</h1>
 
-<canvas id="field"></canvas>
 
-<div id="score">score: 0</div>
+    <p><s>Play alone</s></p>
 
-<div class="startingBoard">
-    <div class="message"></div>
-    <div class="scoreResult"></div>
-    <div class="modeSelector">
-        <div>
-            <input type="radio" id="easy" name="mode" value="1" />
-            <label>easy</label>
-        </div>
+    <p class="playOnline">Play online</p>
 
-        <div>
-            <input type="radio" id="normal" name="mode" value="2" checked />
-            <label>normal</label>
-        </div>
-
-        <div>
-            <input type="radio" id="hard" name="mode" value="3" />
-            <label>hard</label>
-        </div>
+    <div class="roomForm">
+        <input class="roomName" type="text" placeholder="type same room name with your friend" />
+        <button class="roomCreateButton">enter</button>
     </div>
-    <button>start</button>
 </div>
 
-
-
-<script type="module" src="js/main.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
 </body>
 </html>

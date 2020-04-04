@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no">
+    <title>Snake</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: #222;
+            font-family: "Helvetica Neue";
+        }
+
+        .startingBoard {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            position: fixed;
+            top: 25%;
+            left: 10%;
+
+            width: 80%;
+            height: 50%;
+            box-shadow: #333333 2px 2px 12px -3px;
+
+            background-color: whitesmoke;
+        }
+
+        .message {
+            font-size: 21px;
+        }
+
+        button {
+            width: 50%;
+            background-color: #222222;
+            border: none;
+            padding: 14px 0;
+            font-size: 16px;
+            letter-spacing: 0.15rem;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #333333;
+            cursor: pointer;
+        }
+
+        #score {
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="field"></canvas>
+
+<div id="score">score: 0</div>
+
+<div class="startingBoard">
+    <div class="message"></div>
+    <div class="scoreResult"></div>
+    <div class="modeSelector">
+        <div>
+            <input type="radio" id="easy" name="mode" value="1" />
+            <label>easy</label>
+        </div>
+
+        <div>
+            <input type="radio" id="normal" name="mode" value="2" checked />
+            <label>normal</label>
+        </div>
+
+        <div>
+            <input type="radio" id="hard" name="mode" value="3" />
+            <label>hard</label>
+        </div>
+    </div>
+    <button>start</button>
+</div>
+
+
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

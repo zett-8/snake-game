@@ -1,16 +1,20 @@
 {
-  "name": "snake",
+  "name": "snake-online",
   "version": "1.0.0",
   "description": "",
-  "main": "index.html",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
-  "author": "",
+  "author": "Toshiki Kamei",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "express": "^4.17.1",
-    "http-server": "^0.12.1"
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
   }
 }
