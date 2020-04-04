@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Snake online</title>
 
     <style>
         body {
@@ -11,40 +11,94 @@
             background-color: #222222;
             font-family: "Helvetica Neue";
         }
+
+        .wrap {
+            display: grid;
+            height: 100vh;
+        }
+
         h1 {
             color: white;
             text-align: center;
+            align-self: center;
         }
         .main {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            grid-template-rows: repeat(3, min-content);
             justify-items: center;
             align-items: center;
         }
 
-        button {
+        .opponentStatus { color: white; }
+
+        .readyButton {
             visibility: hidden;
+            width: 150px;
+            height: 30px;
+            border: none;
+            font-size: 13px;
+            opacity: 0.9;
         }
+
+        .readyButton:hover {
+            opacity: 1;
+            cursor: pointer;
+        }
+
+        .messageDiv {
+            display: none;
+            position: fixed;
+            justify-content: center;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            opacity: 0.9;
+            z-index: 900;
+        }
+
+        .message {
+            font-size: 40px;
+            color: white;
+            align-self: center;
+        }
+
+        .playAgainButton {
+            width: 200px;
+            height: 60px;
+            border: none;
+            font-size: 16px;
+            letter-spacing: 0.05rem;
+            opacity: 1;
+            cursor: pointer;
+            background-color: #eee;
+        }
+
+        .playAgainButton:hover { background-color: white; }
 
     </style>
 </head>
 <body>
+<div class="wrap">
+    <h1></h1>
+    <div class="messageDiv">
+        <p class="message"></p>
+        <button class="playAgainButton">Play again!</button>
+    </div>
 
-<h1></h1>
-<div class="message"></div>
-<button>I'm ready</button>
+    <div class="main">
+        <div style="width: 390px"><button class="readyButton">I'm ready</button></div>
+        <div></div>
+        <p class="myStatus"></p>
+        <p class="opponentStatus">waiting for opponent...</p>
+        <canvas id="field1"></canvas>
+        <canvas id="field2"></canvas>
+    </div>
 
-<div class="main">
-    <p class="myStatus"></p>
-    <p class="opponentStatus">waiting for opponent...</p>
-    <canvas id="field1"></canvas>
-    <canvas id="field2"></canvas>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/room.js"></script>
+    <script type="module" src="/js/game/main.js"></script>
 </div>
-
-
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/room.js"></script>
-<script type="module" src="/js/game/main.js"></script>
-
 </body>
 </html>

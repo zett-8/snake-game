@@ -1,18 +1,17 @@
-// const socket = io()
+'use strict'
 
-const sendButton = document.querySelector('.sendButton')
-const roomID = document.querySelector('.roomID')
+const playOnline = document.querySelector('.playOnline')
+const roomForm = document.querySelector('.roomForm')
+const input = document.querySelector('.roomName')
+
 const createButton = document.querySelector('.roomCreateButton')
-//
-// sendButton.onclick = () => {
-//   socket.emit('send test', 'aaa')
-// }
+
+playOnline.addEventListener('click', () => {
+  roomForm.style.visibility = 'visible'
+  roomForm.style.opacity = '1'
+  roomForm.style.height = '27px'
+})
 
 createButton.onclick = () => {
-  console.log(roomID.value)
-  window.location.href += 'tnatant'
+  window.location.href += input.value
 }
-//
-// socket.on('return message', msg => {
-//   console.log('got message from server ', msg)
-// })

@@ -5,9 +5,7 @@ const io = require('socket.io')(server)
 
 const PORT = process.env.PORT || 8008
 
-const rooms = {
-
-}
+const rooms = {}
 
 app.use(express.static(__dirname + '/'))
 

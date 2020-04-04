@@ -3,7 +3,7 @@ const socket = io()
 const h1 = document.querySelector('h1')
 const myStatus = document.querySelector('.myStatus')
 const opponentStatus = document.querySelector('.opponentStatus')
-const startButton = document.querySelector('button')
+const readyButton = document.querySelector('.readyButton')
 
 const roomName = window.location.pathname.split('/')[1]
 
@@ -26,7 +26,7 @@ socket.on('welcome', msg => {
     myStatus.innerText = 'not ready yet'
     opponentStatus.style.color = '#cc0000'
     opponentStatus.innerText = 'not ready yet'
-    startButton.style.visibility = 'visible'
+    readyButton.style.visibility = 'visible'
   }
 })
 

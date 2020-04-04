@@ -1,12 +1,11 @@
 // @ DOMs
-window.startingBoard = document.querySelector('.startingBoard')
-const messageDiv = document.querySelector('.message')
-window.scoreResult = document.querySelector('.scoreResult')
-window.startButton = document.querySelector('button')
-window.modeSelectors = document.querySelectorAll('input')
-window.scoreDiv = document.querySelector('#score')
+const messageDiv = document.querySelector('.messageDiv')
+const message = document.querySelector('.message')
 const myStatus = document.querySelector('.myStatus')
 const opponentStatus = document.querySelector('.opponentStatus')
+window.playAgainButton = document.querySelector('.playAgainButton')
+window.scoreResult = document.querySelector('.scoreResult')
+window.readyButton = document.querySelector('.readyButton')
 
 export const clear = game => {
   game.ctx.clearRect(0, 0, game.canvas.width, game.canvas.height)
@@ -29,16 +28,9 @@ export const renderBait = game => {
   game.baits.data.forEach(b => game.ctx.fillRect(b.x, b.y, game.SIZE, game.SIZE))
 }
 
-export const renderMessage = message => {
-  messageDiv.innerText = message
-}
-
-export const hideStartingBoard = () => {
-  // window.startingBoard.style.visibility = 'hidden'
-}
-
-export const renderScore = game => {
-  window.scoreDiv.innerHTML = 'score: ' + String(game.score)
+export const renderMessage = msg => {
+  messageDiv.style.display = 'grid'
+  message.innerText = msg
 }
 
 export const updateObjects = game => {
@@ -51,11 +43,13 @@ export const updateObjects = game => {
 export const imReady = () => {
   myStatus.style.color = '#008800'
   myStatus.innerText = 'READY'
+  window.readyButton.style.visibility = 'hidden'
 }
 
 export const opponentIsReady = () => {
   opponentStatus.style.color = '#008800'
   opponentStatus.innerText = 'READY'
+
 }
 
 export const countDown = () => {

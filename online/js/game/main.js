@@ -130,17 +130,14 @@ const setKeyConfigs = () => {
   document.onkeydown = e => handleKeyDown(e)
   document.body.ontouchend = () => handleTouched()
 
-  // handle game difficulty setting
-  window.modeSelectors.forEach(i => {
-    i.addEventListener('change', e => {
-      game.mode = parseInt(e.target.value, 10)
-    })
-  })
-
   // start button setting
-  window.startButton.onclick = () => {
+  window.readyButton.onclick = () => {
     imReady()
     socket.emit('ready', makeMessage())
+  }
+
+  window.playAgainButton.onclick = () => {
+    window.location.reload()
   }
 
   const handleKeyDown = e => {
