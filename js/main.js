@@ -58,7 +58,8 @@ const watch = () => {
     renderScore(game)
 
     if (game.score % 5 === 0) {
-      game.fieldSize -= 30
+      game.fieldSize -= game.SIZE * 2
+      game.shrink(game.SIZE * 2)
       renderField(game)
       game.checkBaitsPosition()
       updateObjects(game)

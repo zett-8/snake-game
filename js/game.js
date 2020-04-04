@@ -64,6 +64,18 @@ class Game {
     this.play = setInterval(fn, this.speed)
   }
 
+  shrink(shrinkSize) {
+    const half = Math.floor(shrinkSize / 2)
+    this.baits.data.forEach(b => {
+      b.x -= half
+      b.y -= half
+    })
+    this.snake.data.forEach(s => {
+      s.x -= half
+      s.y -= half
+    })
+  }
+
   makeBait() {
     const newCoordinate = () => {
       const x = Math.floor(Math.random() * (this.fieldSize / this.SIZE)) * this.SIZE
@@ -84,7 +96,7 @@ class Game {
   }
 
   checkBaitsPosition() {
-    this.baits.data = this.baits.data.filter(b => b.x > 0 && b.y > 0 && b.x <= this.fieldSize - this.SIZE  && b.y <= this.fieldSize - this.SIZE)
+    this.baits.data = this.baits.data.filter(b => b.x >= 0 && b.y >= 0 && b.x <= this.fieldSize - this.SIZE  && b.y <= this.fieldSize - this.SIZE)
     this.makeBait()
   }
 
