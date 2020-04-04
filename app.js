@@ -17,15 +17,13 @@ app.get('/solo', (req, res) => {
   res.sendFile(__dirname + '/solo/solo.html')
 })
 
-app.get('/:room', (req, res) => {
+app.get('/room/:name', (req, res) => {
   res.sendFile(__dirname + '/room.html')
 })
 
 io.on('connection', socket => {
-  console.log('user connected')
 
   socket.on('disconnect', () => {
-    console.log('user disconnected', socket.id)
     Object.keys(rooms).forEach(roomName => {
       rooms[roomName] = rooms[roomName].filter(v => v.id !== socket.id)
     })

@@ -15,6 +15,7 @@ const makeMessage = (message='') => ({
 h1.innerText = 'room [' + roomName + ']'
 
 socket.emit('enter', roomName)
+
 socket.on('room is full', () => {
   confirm('room is full')
   window.location.href = '/'

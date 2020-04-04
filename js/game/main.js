@@ -3,7 +3,6 @@
 import Game from './game.js'
 import { clear, renderMessage, imReady, opponentIsReady, updateObjects, renderField, countDown  } from './renderer.js'
 
-
 const canvas1 = document.getElementById('field1')
 const canvas2 = document.getElementById('field2')
 const ctx1 = canvas1.getContext('2d')
