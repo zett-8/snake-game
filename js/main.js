@@ -78,6 +78,7 @@ const gameOver = message => {
 
 const setKeyConfigs = () => {
   document.onkeydown = e => handleKeyDown(e)
+  document.body.ontouchend = () => handleTouched()
 
   // handle game difficulty setting
   window.modeSelectors.forEach(i => {
@@ -120,4 +121,18 @@ const setKeyConfigs = () => {
         if (game.play === null) startGame()
     }
   }
+
+  const _handleTouched = () => {
+    let n = 0
+
+    return () => {
+      if (!game.play) return null
+
+      const order = ['ArrowDown', 'ArrowLeft', 'ArrowUp', 'ArrowRight']
+      handleKeyDown({ code: order[n] })
+      n = n > 2 ? 0 : n + 1
+    }
+  }
+  const handleTouched= _handleTouched()
+
 }
