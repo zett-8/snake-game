@@ -5,7 +5,7 @@ const myStatus = document.querySelector('.myStatus')
 const opponentStatus = document.querySelector('.opponentStatus')
 const readyButton = document.querySelector('.readyButton')
 
-const roomName = window.location.pathname.split('/')[1]
+const roomName = window.location.pathname.split('/')[2]
 
 const makeMessage = (message='') => ({
   roomName,
