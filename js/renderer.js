@@ -1,3 +1,13 @@
+// @ DOMs
+window.canvas = document.getElementById('field')
+window.ctx = window.canvas.getContext('2d')
+window.startingBoard = document.querySelector('.startingBoard')
+window.messageDiv = document.querySelector('.message')
+window.scoreResult = document.querySelector('.scoreResult')
+window.startButton = document.querySelector('button')
+window.modeSelectors = document.querySelectorAll('input')
+window.scoreDiv = document.querySelector('#score')
+
 export const clear = () => {
   window.ctx.clearRect(0, 0, window.canvas.width, window.canvas.height)
 }

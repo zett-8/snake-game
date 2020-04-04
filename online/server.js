@@ -22,6 +22,13 @@ app.get('/:room', (req, res) => {
 io.on('connection', socket => {
   console.log('user connected')
 
+  socket.on('disconnect', () => {
+    console.log('user disconnected', socket.id)
+    Object.keys(rooms).forEach(roomName => {
+      rooms[roomName] = rooms[roomName].filter(v => v.id !== socket.id)
+    })
+  })
+
   socket.on('enter', roomName => {
 
     if (rooms[roomName] && rooms[roomName].length > 1) {
@@ -29,7 +36,7 @@ io.on('connection', socket => {
     } else {
       socket.join(roomName, () => {
         let [ID, roomName] = Object.keys(socket.rooms)
-        rooms[roomName] = rooms.hasOwnProperty(roomName) ? [...rooms[roomName], ID] : [ID]
+        rooms[roomName] = rooms.hasOwnProperty(roomName) ? [...rooms[roomName], {id: ID, ready: false}] : [{ id: ID, ready: false}]
 
         const message = {
           message: 'welcome to room [' + roomName + ']',
@@ -41,9 +48,31 @@ io.on('connection', socket => {
     }
   })
 
-  socket.on('MFC', msg => {
-    console.log(msg)
-    io.to('a').emit('MFS', msg)
+  socket.on('ready', msg => {
+    const roomName = msg.roomName
+    rooms[roomName].forEach(u => {
+      if (u.id === socket.id) u.ready = true
+    })
+
+    socket.to(roomName).emit('opponentIsReady')
+
+    if (rooms[roomName].every(u => u.ready)) {
+      io.in(roomName).emit('gameStart')
+    }
+  })
+
+  socket.on('madeBaits', msg => {
+    const roomName = msg.roomName
+    const baits = msg.message
+
+    socket.to(roomName).emit('opponentMadeBaits', baits)
+  })
+
+  socket.on('move', msg => {
+    const roomName = msg.roomName
+    const vector = msg.message
+
+    socket.to(roomName).emit('opponentMoved', vector)
   })
 })
 

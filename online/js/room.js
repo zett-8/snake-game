@@ -1,21 +1,17 @@
 const socket = io()
 
 const h1 = document.querySelector('h1')
-const input = document.querySelector('input')
-const button = document.querySelector('button')
 
-button.onclick = () => {
-  socket.emit('MFC', input.value)
-}
+const roomName = window.location.pathname.split('/')[1]
 
+const makeMessage = (message='') => ({
+  roomName,
+  message
+})
 
+h1.innerText = 'room [' + roomName + ']'
 
-
-const roomID = window.location.pathname.split('/')[1]
-
-h1.innerText = 'room [' + roomID + ']'
-
-socket.emit('enter', roomID)
+socket.emit('enter', roomName)
 socket.on('room is full', () => {
   alert('room is full')
   window.location.href = '/'

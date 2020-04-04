@@ -3,16 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            justify-items: center;
+            align-items: center;
+        }
+
+        .main p {
+            color: #cc0000;
+        }
+
+    </style>
 </head>
 <body>
 
 <h1></h1>
+<button>ready</button>
 
-<input type="text" />
+<div class="main">
+    <p class="myStatus">not ready yet</p>
+    <p class="opponentStatus">not ready yet</p>
+    <canvas id="field1"></canvas>
+    <canvas id="field2"></canvas>
+</div>
 
-<button>send</button>
 
 <script src="/socket.io/socket.io.js"></script>
+<script type="module" src="/js/game/main.js"></script>
 <script src="/js/room.js"></script>
 
 </body>

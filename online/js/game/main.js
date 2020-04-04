@@ -1,36 +1,49 @@
 'use strict'
 
 import Game from './game.js'
-import { clear, renderStartingBoard, hideStartingBoard, renderScore, updateObjects, renderField  } from './renderer.js'
+import { clear, renderStartingBoard, imReady, opponentIsReady, updateObjects, renderField  } from './renderer.js'
 
-const game = new Game()
+const canvas1 = document.getElementById('field1')
+const canvas2 = document.getElementById('field2')
+const ctx1 = canvas1.getContext('2d')
+const ctx2 = canvas2.getContext('2d')
+
+const game = new Game(canvas1, ctx1)
+const game2 = new Game(canvas2, ctx2)
+
 
 window.onload = function() {
   setKeyConfigs()
   renderField(game)
-}
-
-const initGame = () => {
-  game.reset()
-  game.makeBait()
-  renderField(game)
-  updateObjects(game)
+  renderField(game2)
 }
 
 const routine = () => {
-  clear()
+  clear(game)
+  clear(game2)
   game.moveSnake(() => { routine() })
+  game2.moveSnake(() => { routine() })
   updateObjects(game)
+  updateObjects(game2)
   watch()
 }
 
 const startGame = () => {
-  initGame()
+  // == init game
+  game.reset()
+  game2.reset()
+  const baits = game.makeBait()
+  socket.emit('madeBaits', makeMessage(baits))
+
+  renderField(game)
+  renderField(game2)
+  updateObjects(game)
+  updateObjects(game2)
+  // ==
+
   game.play = setInterval(() => {
     routine()
   }, game.speed)
-
-  hideStartingBoard()
 }
 
 const watch = () => {
@@ -45,7 +58,7 @@ const watch = () => {
 
   if (game.score !== game.snake.data.length - 1) {
     game.score = game.snake.data.length - 1
-    renderScore(game)
+    // renderScore(game)
 
     if (game.score % 5 === 0) {
       game.fieldSize -= game.SIZE * 2
@@ -60,12 +73,30 @@ const watch = () => {
 
 const gameOver = message => {
   clearInterval(game.play)
+  clearInterval(game2.play)
   game.play = null
+  game2.play = null
 
   ;(() => {
     return new Promise(resolve => setTimeout(resolve, 400))
   })().then(() => renderStartingBoard(game, message))
 }
+
+socket.on('opponentIsReady', () => {
+  opponentIsReady()
+})
+
+socket.on('gameStart', () => {
+  startGame()
+})
+
+socket.on('opponentMoved', vector => {
+  game2.vector = vector
+})
+
+socket.on('opponentMadeBaits', baits => {
+  game2.baits.data = baits
+})
 
 const setKeyConfigs = () => {
   document.onkeydown = e => handleKeyDown(e)
@@ -79,7 +110,10 @@ const setKeyConfigs = () => {
   })
 
   // start button setting
-  window.startButton.onclick = startGame
+  window.startButton.onclick = () => {
+    imReady()
+    socket.emit('ready', makeMessage())
+  }
 
   const handleKeyDown = e => {
     // snake cannot return
@@ -107,10 +141,9 @@ const setKeyConfigs = () => {
       case 'ArrowLeft':
         game.vector = { d: e.code, x: -game.SIZE, y: 0 }
         break
-
-      case 'Enter':
-        if (game.play === null) startGame()
     }
+
+    socket.emit('move', makeMessage(game.vector))
   }
 
   const _handleTouched = () => {
