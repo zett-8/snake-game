@@ -8,8 +8,13 @@
         body {
             margin: 0;
             padding: 0;
+            background-color: #222222;
+            font-family: "Helvetica Neue";
         }
-
+        h1 {
+            color: white;
+            text-align: center;
+        }
         .main {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -17,8 +22,8 @@
             align-items: center;
         }
 
-        .main p {
-            color: #cc0000;
+        button {
+            visibility: hidden;
         }
 
     </style>
@@ -26,19 +31,20 @@
 <body>
 
 <h1></h1>
-<button>ready</button>
+<div class="message"></div>
+<button>I'm ready</button>
 
 <div class="main">
-    <p class="myStatus">not ready yet</p>
-    <p class="opponentStatus">not ready yet</p>
+    <p class="myStatus"></p>
+    <p class="opponentStatus">waiting for opponent...</p>
     <canvas id="field1"></canvas>
     <canvas id="field2"></canvas>
 </div>
 
 
 <script src="/socket.io/socket.io.js"></script>
-<script type="module" src="/js/game/main.js"></script>
 <script src="/js/room.js"></script>
+<script type="module" src="/js/game/main.js"></script>
 
 </body>
 </html>

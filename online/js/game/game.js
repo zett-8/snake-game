@@ -9,6 +9,7 @@ class Game {
     this.fieldSize = 390
     this.mode = 2
     this.vector = { d: 'ArrowRight', x: this.SIZE, y: 0 }
+    this.debt = 0
 
     this.baits = { num: 2, data: [] }
     this.snake = {
@@ -55,6 +56,7 @@ class Game {
     this.fieldSize = 390
     this.speed = this.settings.speed()
     this.vector = { d: 'ArrowRight', x: this.SIZE, y: 0 }
+    this.debt = 0
 
     this.baits = { num: this.settings.baitNum(), data: [] }
     this.snake.data = [{ x: 75, y: 105 }]
@@ -90,13 +92,14 @@ class Game {
       return this.baits.data.every(b => b.x !== c[0] && b.y !== c[1])
     }
 
+    let changed = false
     while (this.baits.data.length < this.baits.num) {
+      changed = true
       const c = newCoordinate()
-
       if (ableToPut(c)) this.baits.data.push({ x: c[0], y: c[1]})
     }
 
-    return this.baits.data
+    return changed ? this.baits.data : null
   }
 
   checkBaitsPosition() {
@@ -104,20 +107,32 @@ class Game {
     this.makeBait()
   }
 
-  moveSnake(updateFunc) {
+  moveSnake() {
     const next = JSON.parse(JSON.stringify(this.snake.data[0]))
     next.x += this.vector.x
     next.y += this.vector.y
 
     if (this.snake.willBiteBait(next)) {
       this.snake.data.unshift(next)
+      if (this.debt) {
+        this.debt -= 1
+      } else {
+        this.snake.data.pop()
+      }
       this.baits.data = this.baits.data.filter(b => b.x !== next.x && b.y !== next.y)
-      this.makeBait()
 
-      if (this.mode === 2) this.speedUp(1, updateFunc)
+      // if (this.mode === 2) this.speedUp(1, updateFunc)
+
+      return true
     } else {
       this.snake.data.unshift(next)
-      this.snake.data.pop()
+      if (this.debt) {
+        this.debt -= 1
+      } else {
+        this.snake.data.pop()
+      }
+
+      return false
     }
   }
 }

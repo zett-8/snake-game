@@ -1,7 +1,8 @@
 'use strict'
 
 import Game from './game.js'
-import { clear, renderStartingBoard, imReady, opponentIsReady, updateObjects, renderField  } from './renderer.js'
+import { clear, renderMessage, imReady, opponentIsReady, updateObjects, renderField, countDown  } from './renderer.js'
+
 
 const canvas1 = document.getElementById('field1')
 const canvas2 = document.getElementById('field2')
@@ -21,8 +22,12 @@ window.onload = function() {
 const routine = () => {
   clear(game)
   clear(game2)
-  game.moveSnake(() => { routine() })
-  game2.moveSnake(() => { routine() })
+  const bitBait = game.moveSnake()
+  if (bitBait) {
+    socket.emit('bitBait', makeMessage())
+    game2.debt += 1
+  }
+  game2.moveSnake()
   updateObjects(game)
   updateObjects(game2)
   watch()
@@ -47,13 +52,17 @@ const startGame = () => {
 }
 
 const watch = () => {
+  const diff = game.makeBait()
+  if (diff) socket.emit('madeBaits', makeMessage(diff))
   const head = game.snake.data[0]
   if (head.x < 0 || head.x >= game.fieldSize || head.y < 0 || head.y >= game.fieldSize) {
-    gameOver('Oops, bumped into wall!')
+    gameOver('You lost...')
+    socket.emit('gameOver', makeMessage())
   }
 
   if (game.snake.bitItself()) {
-    gameOver('Don\'t bite yourself!')
+    gameOver('You lost')
+    socket.emit('gameOver', makeMessage())
   }
 
   if (game.score !== game.snake.data.length - 1) {
@@ -79,23 +88,42 @@ const gameOver = message => {
 
   ;(() => {
     return new Promise(resolve => setTimeout(resolve, 400))
-  })().then(() => renderStartingBoard(game, message))
+  })().then(() => renderMessage(message))
 }
+
+socket.on('welcome', msg => {
+  console.log(msg)
+})
 
 socket.on('opponentIsReady', () => {
   opponentIsReady()
 })
 
 socket.on('gameStart', () => {
-  startGame()
+  countDown()
+  ;(() => {
+    return new Promise(resolve => {
+      setTimeout(resolve, 3000)
+    })
+  })().then(() => {
+    startGame()
+  })
 })
 
 socket.on('opponentMoved', vector => {
   game2.vector = vector
 })
 
+socket.on('opponentBitBait', () => {
+  game.debt += 1
+})
+
 socket.on('opponentMadeBaits', baits => {
   game2.baits.data = baits
+})
+
+socket.on('youWon', () => {
+  gameOver('You won!')
 })
 
 const setKeyConfigs = () => {

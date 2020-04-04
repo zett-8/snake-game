@@ -1,6 +1,6 @@
 // @ DOMs
 window.startingBoard = document.querySelector('.startingBoard')
-window.messageDiv = document.querySelector('.message')
+const messageDiv = document.querySelector('.message')
 window.scoreResult = document.querySelector('.scoreResult')
 window.startButton = document.querySelector('button')
 window.modeSelectors = document.querySelectorAll('input')
@@ -29,11 +29,8 @@ export const renderBait = game => {
   game.baits.data.forEach(b => game.ctx.fillRect(b.x, b.y, game.SIZE, game.SIZE))
 }
 
-export const renderStartingBoard = (game, message) => {
-  // window.messageDiv.innerText = message
-  // window.scoreResult.innerText = 'Your score: ' + game.score
-  // window.startButton.textContent = 'restart'
-  // window.startingBoard.style.visibility = 'visible'
+export const renderMessage = message => {
+  messageDiv.innerText = message
 }
 
 export const hideStartingBoard = () => {
@@ -59,4 +56,19 @@ export const imReady = () => {
 export const opponentIsReady = () => {
   opponentStatus.style.color = '#008800'
   opponentStatus.innerText = 'READY'
+}
+
+export const countDown = () => {
+  let n = 3
+  myStatus.innerText = n
+  opponentStatus.innerText = n
+  const i = setInterval(() => {
+    n = (n === 1) ? 'GO!' : n -= 1
+    myStatus.innerText = n
+    opponentStatus.innerText = n
+  }, 1000)
+
+  ;(() => {
+    return new Promise(resolve => setTimeout(resolve, 3000))
+  })().then(() => clearInterval(i))
 }

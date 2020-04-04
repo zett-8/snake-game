@@ -3,7 +3,7 @@ const app = express()
 const server = require('http').createServer(app)
 const io = require('socket.io')(server)
 
-const PORT = 8008
+const PORT = process.env.PORT || 8008
 
 const rooms = {
 
@@ -40,10 +40,10 @@ io.on('connection', socket => {
 
         const message = {
           message: 'welcome to room [' + roomName + ']',
-          yourID: ID
+          bothAreHere: rooms[roomName].length === 2
         }
 
-        io.to(ID).emit('MFS', message)
+        io.in(roomName).emit('welcome', message)
       })
     }
   })
@@ -73,6 +73,14 @@ io.on('connection', socket => {
     const vector = msg.message
 
     socket.to(roomName).emit('opponentMoved', vector)
+  })
+
+  socket.on('bitBait', msg => {
+    socket.to(msg.roomName).emit('opponentBitBait')
+  })
+
+  socket.on('gameOver', msg => {
+    socket.to(msg.roomName).emit('youWon')
   })
 })
 
