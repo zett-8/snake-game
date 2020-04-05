@@ -1,15 +1,15 @@
-<h1 style="text-align: center;">How to play</h1>
+# How to play
 
 ### Where?
-[https://snake-online-2020.herokuapp.com]('https://snake-online-2020.herokuapp.com/')
+[https://snake-online-2020.herokuapp.com](https://snake-online-2020.herokuapp.com/)
 
-##Basics
+## Basics
 ```
  ・Use arrow keys to move the snake
  ・Do not bump into the wall
  ・Do not bite yourself
 ```
-##Play alone
+## Play alone
 
  1. The snake gets longer by eating bait (as you already know)
  2. ***The field is going to shrink*** for each 5 bait the snake eats
@@ -27,7 +27,7 @@
  - Speed is very fast from the beginning
  
  
- ##Play online
+ ## Play online
 
  1. The snake gets longer ***when opponent eats bait***
  2. The field is going to shrink for each 5 bait ***your opponent eats***
