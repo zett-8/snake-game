@@ -6,6 +6,20 @@ const io = require('socket.io')(server)
 const PORT = process.env.PORT || 8008
 
 const rooms = {}
+let randomRoomName = []
+const getRandomRoomName = () => {
+  if (!randomRoomName.length) randomRoomName = makeRandomString(8)
+  return randomRoomName.shift()
+}
+const makeRandomString = n => {
+   let result = ''
+   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+   const charactersLength = characters.length
+   for (let i = 0; i < n; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+   }
+   return [result, result]
+}
 
 app.use(express.static(__dirname + '/'))
 
@@ -15,6 +29,10 @@ app.get('/', (req, res) => {
 
 app.get('/solo', (req, res) => {
   res.sendFile(__dirname + '/solo/solo.html')
+})
+
+app.get('/mode/random', (req, res) => {
+  res.sendFile(__dirname + '/room.html')
 })
 
 app.get('/room/:name', (req, res) => {
@@ -27,6 +45,7 @@ io.on('connection', socket => {
 
   socket.on('disconnect', () => {
     let room = ''
+    // detect room where user existed
     Object.keys(rooms).some(roomName => {
       rooms[roomName].filter(v => {
         if (v.id === socket.id) {
@@ -37,7 +56,10 @@ io.on('connection', socket => {
     })
 
     if (!room) return null
+    // discard pair of random room
+    randomRoomName = randomRoomName.filter(r => r !== room)
 
+    // exclude user from the room and delete room if there is no user
     rooms[room] = rooms[room].filter(u => u.id !== socket.id)
     if (rooms[room].length) {
       io.to(room).emit('opponent disconnected')
@@ -47,6 +69,9 @@ io.on('connection', socket => {
   })
 
   socket.on('enter', roomName => {
+    if (roomName === 'random') {
+      roomName = getRandomRoomName()
+    }
 
     if (rooms[roomName] && rooms[roomName].length > 1) {
       socket.emit('room is full')
@@ -57,7 +82,8 @@ io.on('connection', socket => {
 
         const message = {
           message: 'welcome to room [' + roomName + ']',
-          bothAreHere: rooms[roomName].length === 2
+          bothAreHere: rooms[roomName].length === 2,
+          roomName
         }
 
         io.in(roomName).emit('welcome', message)
@@ -78,11 +104,11 @@ io.on('connection', socket => {
     }
   })
 
-  socket.on('madeBaits', msg => {
+  socket.on('madeDiff', msg => {
     const roomName = msg.roomName
-    const baits = msg.message
+    const data = msg.message
 
-    socket.to(roomName).emit('opponentMadeBaits', baits)
+    socket.to(roomName).emit('opponentMadeDiff', data)
   })
 
   socket.on('move', msg => {
@@ -93,7 +119,6 @@ io.on('connection', socket => {
   })
 
   socket.on('bitBait', msg => {
-    console.log(socket.id)
     socket.to(msg.roomName).emit('opponentBitBait')
   })
 

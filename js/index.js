@@ -2,6 +2,7 @@
 
 const playAlone = document.querySelector('.playAlone')
 const playOnline = document.querySelector('.playOnline')
+const playWithFriend = document.querySelector('.playWithFriend')
 const roomForm = document.querySelector('.roomForm')
 const roomNameInput = document.querySelector('.roomName')
 
@@ -11,12 +12,16 @@ playAlone.onclick = () => {
   window.location.href += 'solo'
 }
 
+playOnline.onclick = () => {
+  window.location.href += 'mode/random'
+}
+
 roomForm.onsubmit = e => {
   e.preventDefault()
   window.location.href += 'room/' + roomNameInput.value
 }
 
-playOnline.onclick = () => {
+playWithFriend.onclick = () => {
   roomNameInput.value = ''
   roomForm.style.visibility = 'visible'
   roomForm.style.opacity = '1'

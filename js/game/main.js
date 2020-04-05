@@ -1,7 +1,16 @@
 'use strict'
 
 import Game from './game.js'
-import { clear, renderMessage, imReady, opponentIsReady, waitingForOpponent, updateObjects, renderField, countDown  } from './renderer.js'
+import {
+  clear,
+  renderMessage,
+  imReady,
+  opponentIsReady,
+  waitingForOpponent,
+  updateObjects,
+  renderField,
+  countDown
+} from './renderer.js'
 
 const canvas1 = document.getElementById('field1')
 const canvas2 = document.getElementById('field2')
@@ -10,7 +19,6 @@ const ctx2 = canvas2.getContext('2d')
 
 const game = new Game(canvas1, ctx1)
 const game2 = new Game(canvas2, ctx2)
-
 
 window.onload = function() {
   setKeyConfigs()
@@ -23,6 +31,7 @@ const routine = () => {
   clear(game2)
   const bitBait = game.moveSnake()
   game2.moveSnake()
+
   if (bitBait) {
     socket.emit('bitBait', makeMessage())
     game2.debt += 1
@@ -55,11 +64,6 @@ const startGame = () => {
 }
 
 const watch = () => {
-  const diff = game.makeBait()
-  if (diff) {
-    socket.emit('madeBaits', makeMessage(diff))
-  }
-
   const head = game.snake.data[0]
   if (head.x < 0 || head.x >= game.fieldSize || head.y < 0 || head.y >= game.fieldSize) {
     gameOver('You lost...')
@@ -88,6 +92,11 @@ const watch = () => {
     updateObjects(game2)
     game2.willShrink = false
   }
+
+  const diff = game.makeBait()
+  if (diff) {
+    socket.emit('madeDiff', makeMessage({ baits: diff, snake: game.snake.data }))
+  }
 }
 
 const gameOver = message => {
@@ -100,6 +109,8 @@ const gameOver = message => {
     return new Promise(resolve => setTimeout(resolve, 400))
   })().then(() => renderMessage(message))
 }
+
+// @ socket.io
 
 socket.on('opponentIsReady', () => {
   opponentIsReady()
@@ -121,12 +132,12 @@ socket.on('opponentMoved', velocity => {
 })
 
 socket.on('opponentBitBait', () => {
-  console.log('opponent bit bait')
   game.debt += 1
 })
 
-socket.on('opponentMadeBaits', baits => {
+socket.on('opponentMadeDiff', ({ baits, snake }) => {
   game2.baits.data = baits
+  game2.snake.data = snake
 })
 
 socket.on('attacked', () => {
@@ -137,7 +148,8 @@ socket.on('opponent disconnected', () => {
   if (game.play) {
     gameOver('oops, the opponent left... \n or perhaps connection error')
   } else {
-    waitingForOpponent()
+    // waitingForOpponent()
+    window.location.reload()
   }
 })
 
@@ -193,6 +205,7 @@ const setKeyConfigs = () => {
     socket.emit('move', makeMessage(game.velocity))
   }
 
+  // for smart phone
   const _handleTouched = () => {
     let n = 0
 
@@ -205,5 +218,4 @@ const setKeyConfigs = () => {
     }
   }
   const handleTouched= _handleTouched()
-
 }

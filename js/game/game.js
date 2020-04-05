@@ -106,7 +106,6 @@ class Game {
 
   checkBaitsPosition() {
     this.baits.data = this.baits.data.filter(b => b.x >= 0 && b.y >= 0 && b.x <= this.fieldSize - this.SIZE  && b.y <= this.fieldSize - this.SIZE)
-    this.makeBait()
   }
 
   moveSnake() {
