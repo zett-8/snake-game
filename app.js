@@ -95,7 +95,7 @@ io.on('connection', socket => {
     socket.to(msg.roomName).emit('opponentBitBait')
   })
 
-  socket.on('collect 5 baits', msg => {
+  socket.on('collected 5 baits', msg => {
     socket.to(msg.roomName).emit('opponent bit 5 baits')
   })
 
