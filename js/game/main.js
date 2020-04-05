@@ -51,7 +51,7 @@ const startGame = () => {
   game.reset()
   game2.reset()
   const baits = game.makeBait()
-  socket.emit('madeBaits', makeMessage(baits))
+  socket.emit('madeDiff', makeMessage({ baits, snake: game.snake.data }))
   renderField(game)
   renderField(game2)
   updateObjects(game)
