@@ -1,7 +1,7 @@
 <h1 style="text-align: center;">How to play</h1>
 
 ### Where?
-[https://snake-online-2020.herokuapp.com]('https://snake-online-2020.herokuapp.com/')
+[https://snake-online-2020.herokuapp.com](https://snake-online-2020.herokuapp.com/)
 
 ##Basics
 ```
