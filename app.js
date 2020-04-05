@@ -23,6 +23,8 @@ app.get('/room/:name', (req, res) => {
 
 io.on('connection', socket => {
 
+  socket.emit('connected', socket.id)
+
   socket.on('disconnect', () => {
     let room = ''
     Object.keys(rooms).some(roomName => {
@@ -55,7 +57,6 @@ io.on('connection', socket => {
 
         const message = {
           message: 'welcome to room [' + roomName + ']',
-          id: 'your id is ' + socket.id,
           bothAreHere: rooms[roomName].length === 2
         }
 
@@ -92,11 +93,16 @@ io.on('connection', socket => {
   })
 
   socket.on('bitBait', msg => {
+    console.log(socket.id)
     socket.to(msg.roomName).emit('opponentBitBait')
   })
 
-  socket.on('collectedFiveBaits', msg => {
-    socket.to(msg.roomName).emit('opponentBitFiveBaits')
+  socket.on('attack', msg => {
+    socket.to(msg.roomName).emit('attacked')
+  })
+
+  socket.on('test', msg => {
+    socket.to(msg.roomName).emit('test')
   })
 
   socket.on('gameOver', msg => {

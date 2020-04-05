@@ -14,6 +14,10 @@ const makeMessage = (message='') => ({
 
 h1.innerText = 'room [' + roomName + ']'
 
+socket.on('connected', id => {
+  console.log('successfully connected, id[' + id + ']')
+})
+
 socket.emit('enter', roomName)
 
 socket.on('room is full', () => {

@@ -124,7 +124,7 @@ class Game {
       this.baits.data = this.baits.data.filter(b => b.x !== next.x && b.y !== next.y)
 
       // if (this.mode === 2) this.speedUp(1, updateFunc)
-
+      this.score += 1
       return true
     } else {
       this.snake.data.unshift(next)

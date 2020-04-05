@@ -22,11 +22,16 @@ const routine = () => {
   clear(game)
   clear(game2)
   const bitBait = game.moveSnake()
+  game2.moveSnake()
   if (bitBait) {
     socket.emit('bitBait', makeMessage())
     game2.debt += 1
+
+    if (game.score > 0 && game.score % 5 === 0) {
+      game2.willShrink = true
+      socket.emit('attack', makeMessage())
+    }
   }
-  game2.moveSnake()
   updateObjects(game)
   updateObjects(game2)
   watch()
@@ -38,7 +43,6 @@ const startGame = () => {
   game2.reset()
   const baits = game.makeBait()
   socket.emit('madeBaits', makeMessage(baits))
-
   renderField(game)
   renderField(game2)
   updateObjects(game)
@@ -52,7 +56,10 @@ const startGame = () => {
 
 const watch = () => {
   const diff = game.makeBait()
-  if (diff) socket.emit('madeBaits', makeMessage(diff))
+  if (diff) {
+    socket.emit('madeBaits', makeMessage(diff))
+  }
+
   const head = game.snake.data[0]
   if (head.x < 0 || head.x >= game.fieldSize || head.y < 0 || head.y >= game.fieldSize) {
     gameOver('You lost...')
@@ -64,20 +71,6 @@ const watch = () => {
     socket.emit('gameOver', makeMessage())
   }
 
-  if (game.score !== game.snake.data.length - 1) {
-    game.score = game.snake.data.length - 1
-    // renderScore(game)
-
-    if (game.score % 5 === 0) {
-      socket.emit('collectedFiveBaits', makeMessage())
-      // game.fieldSize -= game.SIZE * 2
-      // game.shrink(game.SIZE * 2)
-      // renderField(game)
-      // game.checkBaitsPosition()
-      // updateObjects(game)
-    }
-  }
-
   if (game.willShrink) {
     game.fieldSize -= game.SIZE * 2
     game.shrink(game.SIZE * 2)
@@ -85,6 +78,15 @@ const watch = () => {
     game.checkBaitsPosition()
     updateObjects(game)
     game.willShrink = false
+  }
+
+  if (game2.willShrink) {
+    game2.fieldSize -= game2.SIZE * 2
+    game2.shrink(game2.SIZE * 2)
+    renderField(game2)
+    game2.checkBaitsPosition()
+    updateObjects(game2)
+    game2.willShrink = false
   }
 }
 
@@ -127,13 +129,11 @@ socket.on('opponentMadeBaits', baits => {
   game2.baits.data = baits
 })
 
-socket.on('opponentBitFiveBaits', () => {
-  console.log('opponentBitFiveBaits')
+socket.on('attacked', () => {
   game.willShrink = true
 })
 
 socket.on('opponent disconnected', () => {
-  console.log('opponent disconnect')
   if (game.play) {
     gameOver('oops, the opponent left... \n or perhaps connection error')
   } else {
@@ -185,6 +185,9 @@ const setKeyConfigs = () => {
       case 'ArrowLeft':
         game.velocity = { d: e.code, x: -game.SIZE, y: 0 }
         break
+
+      case 'Period':
+        game.velocity = { d: e.code, x: 0, y: 0 }
     }
 
     socket.emit('move', makeMessage(game.velocity))
