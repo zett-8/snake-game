@@ -1,4 +1,4 @@
-const socket = io()
+const socket = io({ transports: ['websocket'] })
 
 const h1 = document.querySelector('h1')
 const myStatus = document.querySelector('.myStatus')
@@ -22,6 +22,7 @@ socket.on('room is full', () => {
 })
 
 socket.on('welcome', msg => {
+  console.log(msg)
   if (msg.bothAreHere) {
     myStatus.style.color = '#cc0000'
     myStatus.innerText = 'not ready yet'

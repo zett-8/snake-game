@@ -40,6 +40,7 @@ io.on('connection', socket => {
 
         const message = {
           message: 'welcome to room [' + roomName + ']',
+          id: 'your id is ' + socket.id,
           bothAreHere: rooms[roomName].length === 2
         }
 
@@ -81,6 +82,7 @@ io.on('connection', socket => {
 
   socket.on('gameOver', msg => {
     socket.to(msg.roomName).emit('youWon')
+    delete rooms[msg.roomName]
   })
 })
 
