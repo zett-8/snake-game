@@ -1,7 +1,7 @@
 'use strict'
 
 import Game from './game.js'
-import { clear, renderMessage, imReady, opponentIsReady, updateObjects, renderField, countDown  } from './renderer.js'
+import { clear, renderMessage, imReady, opponentIsReady, waitingForOpponent, updateObjects, renderField, countDown  } from './renderer.js'
 
 const canvas1 = document.getElementById('field1')
 const canvas2 = document.getElementById('field2')
@@ -69,15 +69,24 @@ const watch = () => {
     // renderScore(game)
 
     if (game.score % 5 === 0) {
-      game.fieldSize -= game.SIZE * 2
-      game.shrink(game.SIZE * 2)
-      renderField(game)
-      game.checkBaitsPosition()
-      updateObjects(game)
+      socket.emit('collected 5 baits', makeMessage())
+      // game.fieldSize -= game.SIZE * 2
+      // game.shrink(game.SIZE * 2)
+      // renderField(game)
+      // game.checkBaitsPosition()
+      // updateObjects(game)
     }
   }
-}
 
+  if (game.willShrink) {
+    game.fieldSize -= game.SIZE * 2
+    game.shrink(game.SIZE * 2)
+    renderField(game)
+    game.checkBaitsPosition()
+    updateObjects(game)
+    game.willShrink = false
+  }
+}
 
 const gameOver = message => {
   clearInterval(game.play)
@@ -89,10 +98,6 @@ const gameOver = message => {
     return new Promise(resolve => setTimeout(resolve, 400))
   })().then(() => renderMessage(message))
 }
-
-socket.on('welcome', msg => {
-  console.log(msg)
-})
 
 socket.on('opponentIsReady', () => {
   opponentIsReady()
@@ -109,8 +114,8 @@ socket.on('gameStart', () => {
   })
 })
 
-socket.on('opponentMoved', vector => {
-  game2.vector = vector
+socket.on('opponentMoved', velocity => {
+  game2.velocity = velocity
 })
 
 socket.on('opponentBitBait', () => {
@@ -119,6 +124,19 @@ socket.on('opponentBitBait', () => {
 
 socket.on('opponentMadeBaits', baits => {
   game2.baits.data = baits
+})
+
+socket.on('opponent bit 5 baits', () => {
+  game.willShrink = true
+})
+
+socket.on('opponent disconnected', () => {
+  console.log('opponent disconnect')
+  if (game.play) {
+    gameOver('oops, the opponent left... \n or perhaps connection error')
+  } else {
+    waitingForOpponent()
+  }
 })
 
 socket.on('youWon', () => {
@@ -142,32 +160,32 @@ const setKeyConfigs = () => {
   const handleKeyDown = e => {
     // snake cannot return
     if (
-        (game.vector.d === 'ArrowUp' && e.code === 'ArrowDown') ||
-        (game.vector.d === 'ArrowRight' && e.code === 'ArrowLeft') ||
-        (game.vector.d === 'ArrowDown' && e.code === 'ArrowUp') ||
-        (game.vector.d === 'ArrowLeft' && e.code === 'ArrowRight')
+        (game.velocity.d === 'ArrowUp' && e.code === 'ArrowDown') ||
+        (game.velocity.d === 'ArrowRight' && e.code === 'ArrowLeft') ||
+        (game.velocity.d === 'ArrowDown' && e.code === 'ArrowUp') ||
+        (game.velocity.d === 'ArrowLeft' && e.code === 'ArrowRight')
       ) return null
 
-    // set vector to input direction
+    // set velocity to input direction
     switch (e.code) {
       case 'ArrowUp':
-        game.vector = { d: e.code, x: 0, y: -game.SIZE }
+        game.velocity = { d: e.code, x: 0, y: -game.SIZE }
         break
 
       case 'ArrowRight':
-        game.vector = { d: e.code, x: game.SIZE, y: 0 }
+        game.velocity = { d: e.code, x: game.SIZE, y: 0 }
         break
 
       case 'ArrowDown':
-        game.vector = { d: e.code, x: 0, y: game.SIZE }
+        game.velocity = { d: e.code, x: 0, y: game.SIZE }
         break
 
       case 'ArrowLeft':
-        game.vector = { d: e.code, x: -game.SIZE, y: 0 }
+        game.velocity = { d: e.code, x: -game.SIZE, y: 0 }
         break
     }
 
-    socket.emit('move', makeMessage(game.vector))
+    socket.emit('move', makeMessage(game.velocity))
   }
 
   const _handleTouched = () => {

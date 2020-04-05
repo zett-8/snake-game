@@ -6,7 +6,7 @@ class Game {
     this.speed = 100
     this.fieldSize = 630
     this.mode = 2
-    this.vector = { d: 'ArrowRight', x: this.SIZE, y: 0 }
+    this.velocity = { d: 'ArrowRight', x: this.SIZE, y: 0 }
 
     this.baits = { num: 2, data: [] }
     this.snake = {
@@ -52,7 +52,7 @@ class Game {
     this.score = 0
     this.fieldSize = 630
     this.speed = this.settings.speed()
-    this.vector = { d: 'ArrowRight', x: this.SIZE, y: 0 }
+    this.velocity = { d: 'ArrowRight', x: this.SIZE, y: 0 }
 
     this.baits = { num: this.settings.baitNum(), data: [] }
     this.snake.data = [{ x: 75, y: 105 }]
@@ -102,8 +102,8 @@ class Game {
 
   moveSnake(updateFunc) {
     const next = JSON.parse(JSON.stringify(this.snake.data[0]))
-    next.x += this.vector.x
-    next.y += this.vector.y
+    next.x += this.velocity.x
+    next.y += this.velocity.y
 
     if (this.snake.willBiteBait(next)) {
       this.snake.data.unshift(next)

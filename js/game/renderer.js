@@ -40,6 +40,13 @@ export const updateObjects = game => {
   renderSnake(game)
 }
 
+export const waitingForOpponent = () => {
+  window.readyButton.style.visibility = 'hidden'
+  myStatus.innerText = ''
+  opponentStatus.style.color = 'white'
+  opponentStatus.innerText = 'waiting for opponent...'
+}
+
 export const imReady = () => {
   myStatus.style.color = '#008800'
   myStatus.innerText = 'READY'

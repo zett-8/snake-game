@@ -24,9 +24,24 @@ app.get('/room/:name', (req, res) => {
 io.on('connection', socket => {
 
   socket.on('disconnect', () => {
-    Object.keys(rooms).forEach(roomName => {
-      rooms[roomName] = rooms[roomName].filter(v => v.id !== socket.id)
+    let room = ''
+    Object.keys(rooms).some(roomName => {
+      rooms[roomName].filter(v => {
+        if (v.id === socket.id) {
+          room = roomName
+          return true
+        }
+      })
     })
+
+    if (!room) return null
+
+    rooms[room] = rooms[room].filter(u => u.id !== socket.id)
+    if (rooms[room].length) {
+      io.to(room).emit('opponent disconnected')
+    } else {
+      delete rooms[room]
+    }
   })
 
   socket.on('enter', roomName => {
@@ -71,13 +86,17 @@ io.on('connection', socket => {
 
   socket.on('move', msg => {
     const roomName = msg.roomName
-    const vector = msg.message
+    const velocity = msg.message
 
-    socket.to(roomName).emit('opponentMoved', vector)
+    socket.to(roomName).emit('opponentMoved', velocity)
   })
 
   socket.on('bitBait', msg => {
     socket.to(msg.roomName).emit('opponentBitBait')
+  })
+
+  socket.on('collect 5 baits', msg => {
+    socket.to(msg.roomName).emit('opponent bit 5 baits')
   })
 
   socket.on('gameOver', msg => {

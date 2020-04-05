@@ -84,28 +84,28 @@ const setKeyConfigs = () => {
   const handleKeyDown = e => {
     // snake cannot return
     if (
-        (game.vector.d === 'ArrowUp' && e.code === 'ArrowDown') ||
-        (game.vector.d === 'ArrowRight' && e.code === 'ArrowLeft') ||
-        (game.vector.d === 'ArrowDown' && e.code === 'ArrowUp') ||
-        (game.vector.d === 'ArrowLeft' && e.code === 'ArrowRight')
+        (game.velocity.d === 'ArrowUp' && e.code === 'ArrowDown') ||
+        (game.velocity.d === 'ArrowRight' && e.code === 'ArrowLeft') ||
+        (game.velocity.d === 'ArrowDown' && e.code === 'ArrowUp') ||
+        (game.velocity.d === 'ArrowLeft' && e.code === 'ArrowRight')
       ) return null
 
-    // set vector to input direction
+    // set velocity to input direction
     switch (e.code) {
       case 'ArrowUp':
-        game.vector = { d: e.code, x: 0, y: -game.SIZE }
+        game.velocity = { d: e.code, x: 0, y: -game.SIZE }
         break
 
       case 'ArrowRight':
-        game.vector = { d: e.code, x: game.SIZE, y: 0 }
+        game.velocity = { d: e.code, x: game.SIZE, y: 0 }
         break
 
       case 'ArrowDown':
-        game.vector = { d: e.code, x: 0, y: game.SIZE }
+        game.velocity = { d: e.code, x: 0, y: game.SIZE }
         break
 
       case 'ArrowLeft':
-        game.vector = { d: e.code, x: -game.SIZE, y: 0 }
+        game.velocity = { d: e.code, x: -game.SIZE, y: 0 }
         break
 
       case 'Enter':
