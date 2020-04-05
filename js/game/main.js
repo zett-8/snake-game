@@ -69,7 +69,7 @@ const watch = () => {
     // renderScore(game)
 
     if (game.score % 5 === 0) {
-      socket.emit('collected 5 baits', makeMessage())
+      socket.emit('collectedFiveBaits', makeMessage())
       // game.fieldSize -= game.SIZE * 2
       // game.shrink(game.SIZE * 2)
       // renderField(game)
@@ -127,8 +127,8 @@ socket.on('opponentMadeBaits', baits => {
   game2.baits.data = baits
 })
 
-socket.on('opponent bit 5 baits', () => {
-  console.log('opponent bit 5 baits')
+socket.on('opponentBitFiveBaits', () => {
+  console.log('opponentBitFiveBaits')
   game.willShrink = true
 })
 
