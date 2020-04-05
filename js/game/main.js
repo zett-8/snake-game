@@ -119,6 +119,7 @@ socket.on('opponentMoved', velocity => {
 })
 
 socket.on('opponentBitBait', () => {
+  console.log('opponent bit bait')
   game.debt += 1
 })
 
@@ -129,8 +130,6 @@ socket.on('opponentMadeBaits', baits => {
 socket.on('opponent bit 5 baits', () => {
   console.log('opponent bit 5 baits')
   game.willShrink = true
-
-  console.log(game)
 })
 
 socket.on('opponent disconnected', () => {
